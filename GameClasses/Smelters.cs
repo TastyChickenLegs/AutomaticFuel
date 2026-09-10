@@ -14,6 +14,7 @@ namespace AutomaticFuel.GameClasses
 {
     internal class Smelters
     {
+
         private static Dictionary<string, ItemDrop> metals = new Dictionary<string, ItemDrop>
         {
             { "$item_copperore", null },
@@ -36,14 +37,16 @@ namespace AutomaticFuel.GameClasses
         {
             private static void Prefix(ref Smelter __instance)
             {
+
                 if (AutomaticFuel.AutomaticFuelPlugin.configBlastFurnaceTakesAll.Value)
                 {
+
                     if (__instance.m_name != "$piece_blastfurnace")
                     {
-                        UnityEngine.Debug.Log("Ignored non-blast furnace smelter.");
+                     //   UnityEngine.Debug.Log("Ignored non-blast furnace smelter.");
                         return;
                     }
-                    UnityEngine.Debug.Log("Found a blast furnace! Applying fix.");
+                  //  UnityEngine.Debug.Log("Found a blast furnace! Applying fix.");
 
                     ObjectDB instance = ObjectDB.instance;
                     List<ItemDrop> materials = instance.GetAllItems(ItemDrop.ItemData.ItemType.Material, "");
@@ -116,12 +119,10 @@ namespace AutomaticFuel.GameClasses
                     return;
                 if (__instance.name.Contains("windmill") && AutomaticFuelPlugin.turnOffWindmills.Value)
                     return;
-                if (__instance.name.Contains("$piece_smelter") && AutomaticFuelPlugin.turnoffSmelter.Value)
-                    return;
-                if (__instance.name.Contains("$piece_blastfurnace") && AutomaticFuelPlugin.turnoffBlastFurnace.Value)
-                    return;
-                // added to turn off blast furnace and smelter.  03/02/26
+              
 
+                // added to turn off blast furnace and smelter.  03/02/26
+               // AutomaticFuelPlugin.AutomaticFuelLogger.LogInfo(__instance.name);
 
                 if (Time.time - AutomaticFuelPlugin.lastFuel < 0.1)
                 {
@@ -142,6 +143,11 @@ namespace AutomaticFuel.GameClasses
         public static async void RefuelSmelter(Smelter __instance, ZNetView ___m_nview, int delay)
         {
             await Task.Delay(delay);
+            
+          
+
+
+            
 
             if (!__instance || !___m_nview || !___m_nview.IsValid() || !AutomaticFuelPlugin.modEnabled.Value)
                 return;
@@ -183,6 +189,9 @@ namespace AutomaticFuel.GameClasses
             Vector3 position = __instance.transform.position + Vector3.up;
             foreach (Collider collider in Physics.OverlapSphere(position, AutomaticFuelPlugin.dropRange.Value, LayerMask.GetMask(new string[] { "item" })))
             {
+                
+                
+                
                 if (collider?.attachedRigidbody)
                 {
                     ItemDrop item = collider.attachedRigidbody.GetComponent<ItemDrop>();
@@ -190,6 +199,8 @@ namespace AutomaticFuel.GameClasses
 
                     if (item?.GetComponent<ZNetView>()?.IsValid() != true)
                         continue;
+
+                
 
                     string name = TastyUtils.GetPrefabName(item.gameObject.name);
                     if (AutomaticFuelPlugin.nofloorpickup.Value)
@@ -207,7 +218,7 @@ namespace AutomaticFuel.GameClasses
                                 }
 
                                 AutomaticFuelPlugin.Dbgl($"auto adding ore {name} from ground");
-
+                               
                                 int amount = Mathf.Min(item.m_itemData.m_stack, maxOre);
                                 maxOre -= amount;
 
@@ -219,14 +230,14 @@ namespace AutomaticFuel.GameClasses
                                             AutomaticFuelPlugin.Destroy(item.gameObject);
                                         else
                                             ZNetScene.instance.Destroy(item.gameObject);
-                                        ___m_nview.InvokeRPC("RPC_AddOre", new object[] { name });
+                                        ___m_nview.InvokeRPC("RPC_AddOre", new object[] { name, false });
                                         if (AutomaticFuelPlugin.distributedFilling.Value)
                                             ored = true;
                                         break;
                                     }
 
                                     item.m_itemData.m_stack--;
-                                    ___m_nview.InvokeRPC("RPC_AddOre", new object[] { name });
+                                    ___m_nview.InvokeRPC("RPC_AddOre", new object[] { name, false });
                                     Traverse.Create(item).Method("Save").GetValue();
                                     if (AutomaticFuelPlugin.distributedFilling.Value)
                                         ored = true;
@@ -236,8 +247,11 @@ namespace AutomaticFuel.GameClasses
                     }
                     if (__instance.m_fuelItem && item.m_itemData.m_shared.m_name ==
                         __instance.m_fuelItem.m_itemData.m_shared.m_name && maxFuel > 0 && !fueled)
-                    { 
+                    {
                         //added for the dont pick u from floor
+
+                       
+
 
                         if (AutomaticFuelPlugin.nofloorpickup.Value)
                         {
@@ -282,6 +296,8 @@ namespace AutomaticFuel.GameClasses
 
             foreach (Container c in nearbyOreContainers)
             {
+               
+
                 foreach (Smelter.ItemConversion itemConversion in __instance.m_conversion)
                 {
                     if (ored)
@@ -299,7 +315,7 @@ namespace AutomaticFuel.GameClasses
 
                             AutomaticFuelPlugin.Dbgl($"container at {c.transform.position} has {oreItem.m_stack} {oreItem.m_dropPrefab.name}, taking one");
 
-                            ___m_nview.InvokeRPC("RPC_AddOre", new object[] { oreItem.m_dropPrefab?.name });
+                            ___m_nview.InvokeRPC("RPC_AddOre", new object[] { oreItem.m_dropPrefab?.name, false });
                             c.GetInventory().RemoveItem(itemConversion.m_from.m_itemData.m_shared.m_name, 1);
                             typeof(Container).GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(c, new object[] { });
                             typeof(Inventory).GetMethod("Changed", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(c.GetInventory(), new object[] { });

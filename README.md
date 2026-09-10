@@ -83,6 +83,11 @@ For people that run a server and don't want to verify clients turn the "verifycl
 ### Version Information
 ___________________________
 
+1.4.8
+
+- no changes made other than turning off some console logging
+
+
 1.4.7
 
 option to disable blast furnace and smelter default is on
