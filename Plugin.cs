@@ -15,7 +15,7 @@ namespace AutomaticFuel
     public class AutomaticFuelPlugin : BaseUnityPlugin
     {
         internal const string ModName = "AutomaticFuel";
-        internal const string ModVersion = "1.5.0";
+        internal const string ModVersion = "1.5.1";
         internal const string Author = "TastyChickenLegs";
         private const string ModGUID = Author + "." + ModName;
         private static string ConfigFileName = ModGUID + ".cfg";

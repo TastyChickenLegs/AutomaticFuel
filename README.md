@@ -1,6 +1,10 @@
 # Automatic Fuel
 
-### Updated for Hildir's Request
+### Updated for Valheim 1.0
+
+# Some notes for 1.0  There was a rather large change in the code base for 1.0  As a result you will notice some additional logging.  I will turn that off later but it is will help if there are issues reported.
+
+This has been running stable on my build but please let me know if you encounter any errors.
 
 Fuels torches, campfires, windmills, spinning wheels, hearths, kilns and smelters
 - Fuels from the ground
@@ -82,6 +86,21 @@ For people that run a server and don't want to verify clients turn the "verifycl
 ``````
 ### Version Information
 ___________________________
+
+
+1.5.1
+
+- updated serversync libraries for multiplayer support
+
+
+1.5.0
+
+- updated for Valheim 1.0  
+- There is some additional logging turned on and will be turned off in the next build.
+- recoded methods for adding fuel.  
+
+
+
 
 1.4.8
 
